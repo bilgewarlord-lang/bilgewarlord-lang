@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnet Way Travel | Таны аяллын найдвартай түнш</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBlue: '#0A3161', 
+                        brandYellow: '#FFD700', 
+                        brandLight: '#F8F9FA',
+                        brandText: '#2D3748',
+                        brandGray: '#718096',
+                        forest: '#4A7C59',
+                        cream: '#F5F0E8'
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F8F9FA; overflow-x: hidden; scroll-behavior: smooth; color: #2D3748; }
+        
+        .section-title { font-weight: 800; text-transform: uppercase; font-size: 2.25rem; line-height: 1.2; letter-spacing: 0.02em; }
+        @media (max-width: 768px) { .section-title { font-size: 1.875rem; } }
+        
+        .glass-nav { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-bottom: 1px solid #eaeaea; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        
+        .nav-item { font-size: 13px; font-weight: 700; color: #0A3161; cursor: pointer; position: relative; padding-bottom: 5px; transition: color 0.3s; text-transform: uppercase; letter-spacing: 0.05em; }
+        .nav-item:hover, .nav-active { color: #FFD700; }
+        .nav-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background-color: #FFD700; transition: width 0.3s ease-in-out; }
+        .nav-item:hover::after, .nav-active::after { width: 100%; }
+
+        .spa-page { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+        .page-visible { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .logo-enhanced { mix-blend-mode: multiply; filter: contrast(130%) saturate(150%); }
+
+        .h-scroll-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; gap: 1.5rem; padding-bottom: 1.5rem; padding-top: 1rem; }
+        .h-scroll-container::-webkit-scrollbar { display: none; }
+        .h-scroll-item { scroll-snap-align: start; flex: 0 0 calc(100% - 2rem); }
+        @media (min-width: 768px) { .h-scroll-item { flex: 0 0 calc(50% - 1rem); } }
+        @media (min-width: 1024px) { .h-scroll-item { flex: 0 0 calc(33.333% - 1rem); } }
+
+        .btn-animated { background: linear-gradient(90deg, #FFD700 0%, #F59E0B 50%, #FFD700 100%); background-size: 200% auto; transition: all 0.4s ease; color: #0A3161; }
+        .btn-animated:hover { background-position: right center; box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4); transform: translateY(-2px); }
+
+        .marquee-wrapper { display: flex; overflow: hidden; width: 100%; padding: 30px 0; }
+        .marquee-content { display: flex; animation: marquee 40s linear infinite; }
+        .marquee-content:hover { animation-play-state: paused; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .card-shadow { box-shadow: 0 10px 30px rgba(10, 49, 97, 0.08); transition: transform 0.3s, box-shadow 0.3s; }
+        .card-shadow:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(10, 49, 97, 0.15); }
+        
+        .weather-scroll::-webkit-scrollbar { height: 6px; }
+        .weather-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
+        .weather-scroll::-webkit-scrollbar-thumb { background: #FFD700; border-radius: 4px; }
+
+        /* AI Chat Styles */
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #9CA3AF; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        
+        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+    </style>
+</head>
+<body class="text-brandText font-sans">
+
+    <!-- Top Contact Bar -->
+    <div class="bg-brandBlue text-white py-2.5 hidden md:block text-[12px] font-medium border-b border-brandYellow/30 tracking-wider">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex gap-8">
+                <span><i class="fas fa-phone-alt text-brandYellow mr-2"></i> 7610-6941, 8011-3677, 8861-3677</span>
+                <span><i class="fas fa-envelope text-brandYellow mr-2"></i> magnetwaytravel@gmail.com</span>
+            </div>
+            <div class="flex gap-6 items-center">
+                <a href="https://www.facebook.com/profile.php?id=61578622845513" target="_blank" class="hover:text-brandYellow transition"><i class="fab fa-facebook-f text-lg"></i></a>
+                <a href="https://www.instagram.com/magnet_way1/" target="_blank" class="hover:text-brandYellow transition"><i class="fab fa-instagram text-lg"></i></a>
+                <span class="text-brandYellow font-bold ml-4"><i class="fas fa-clock mr-1"></i> 24/7 Онлайн захиалга</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center cursor-pointer" onclick="changePage('home')">
+                <img src="black minimalist initial luxury monogram logo design.png" alt="Magnet Way Travel" class="h-14 md:h-16 w-auto object-contain logo-enhanced">
+                <div class="ml-3 hidden lg:block">
+                    <h1 class="text-2xl font-black text-brandBlue leading-none tracking-tight font-serif">MAGNET WAY</h1>
+                    <span class="text-[10px] text-brandGray uppercase font-bold tracking-[0.2em]">Travel Agency</span>
+                </div>
+            </div>
+            
+            <div class="hidden lg:flex space-x-8 items-center">
+                <span onclick="changePage('home')" id="nav-home" class="nav-item nav-active">Нүүр хуудас</span>
+                <span onclick="changePage('tours-intl')" id="nav-tours-intl" class="nav-item">Гадаад аялал</span>
+                <span onclick="changePage('tours-dom')" id="nav-tours-dom" class="nav-item">Дотоод аялал</span>
+                <span onclick="changePage('news')" id="nav-news" class="nav-item">Мэдээлэл</span>
+                <span onclick="changePage('about')" id="nav-about" class="nav-item">Бидний тухай</span>
+            </div>
+
+            <button class="lg:hidden text-2xl text-brandBlue" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t px-4 py-4 flex flex-col gap-4 absolute w-full z-40 shadow-lg">
+            <span onclick="changePage('home')" class="font-bold text-brandBlue border-b pb-3 cursor-pointer uppercase text-sm tracking-wider">Нүүр хуудас</span>
+            <span onclick="changePage('tours-intl')" class="font-bold text-brandBlue border-b pb-3 cursor-pointer uppercase text-sm tracking-wider">Гадаад аялал</span>
+            <span onclick="changePage('tours-dom')" class="font-bold text-brandBlue border-b pb-3 cursor-pointer uppercase text-sm tracking-wider">Дотоод аялал</span>
+            <span onclick="changePage('news')" class="font-bold text-brandBlue border-b pb-3 cursor-pointer uppercase text-sm tracking-wider">Мэдээлэл</span>
+            <span onclick="changePage('about')" class="font-bold text-brandBlue pb-3 cursor-pointer uppercase text-sm tracking-wider">Бидний тухай</span>
+        </div>
+    </nav>
+
+    <!-- ===================== PAGE: HOME ===================== -->
+    <div id="page-home" class="spa-page page-visible">
+        
+        <!-- Hero Slider -->
+        <div id="hero-slider" class="relative h-[75vh] md:h-[85vh] bg-cover bg-center transition-all duration-700">
+            <div class="absolute inset-0 bg-gradient-to-r from-brandBlue/90 via-brandBlue/40 to-transparent"></div>
+            
+            <div class="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pl-8 md:pl-16">
+                <h1 id="hero-title" class="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 uppercase drop-shadow-lg leading-tight font-serif"></h1>
+                
+                <div class="flex flex-wrap items-center gap-3 mb-6 text-white font-bold tracking-wider">
+                    <span id="hero-loc" class="bg-white/20 px-5 py-2.5 rounded-full backdrop-blur text-sm border border-white/30 flex items-center"><i class="fas fa-map-marker-alt mr-2 text-brandYellow"></i></span>
+                    <span id="hero-duration" class="bg-white/20 px-5 py-2.5 rounded-full backdrop-blur text-sm border border-white/30 flex items-center"><i class="far fa-clock mr-2 text-brandYellow"></i></span>
+                </div>
+                
+                <p id="hero-desc" class="text-white drop-shadow-md max-w-xl text-lg mb-10 font-medium leading-relaxed"></p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                    <div>
+                        <p class="text-xs text-white/80 font-bold uppercase tracking-widest mb-1">Эхлэх үнэ / Хүн</p>
+                        <p id="hero-price" class="text-2xl md:text-3xl font-black text-brandYellow tracking-tight font-serif"></p>
+                    </div>
+                    <button onclick="showDetail(currentHeroId)" id="hero-btn" class="sm:ml-8 btn-animated font-black px-12 py-4 rounded-full uppercase tracking-widest text-sm shadow-lg">
+                        Хөтөлбөр үзэх
+                    </button>
+                </div>
+
+                <!-- Text Indicators -->
+                <div id="hero-text-indicators" class="absolute bottom-10 left-8 md:left-16 flex gap-8 overflow-x-auto max-w-full text-white/50 text-sm font-bold uppercase tracking-widest pb-2">
+                    <span class="cursor-pointer transition whitespace-nowrap" onclick="setSlide(0)">Япон 4 хот</span>
+                    <span class="cursor-pointer transition whitespace-nowrap" onclick="setSlide(1)">Бээжин-Шанхай</span>
+                    <span class="cursor-pointer transition whitespace-nowrap" onclick="setSlide(2)">Бусан</span>
+                    <span class="cursor-pointer transition whitespace-nowrap" onclick="setSlide(3)">Улаанхад VIP</span>
+                    <span class="cursor-pointer transition whitespace-nowrap" onclick="setSlide(4)">Хайнань</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Widget (7 Days) -->
+        <div class="bg-white border-b border-gray-200 py-10">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-blue-50 text-brandBlue rounded-full flex items-center justify-center text-3xl shadow-sm"><i class="fas fa-cloud-sun"></i></div>
+                        <div>
+                            <h3 class="font-bold text-brandBlue uppercase text-base tracking-wider">Аяллын хотуудын цаг агаар</h3>
+                            <p class="text-xs text-brandGray font-bold uppercase tracking-widest mt-1">7 хоногийн урьдчилсан төлөв</p>
+                        </div>
+                    </div>
+                    <div class="flex-1 max-w-md w-full">
+                        <select id="weather-city" class="bg-brandLight border border-gray-200 text-brandText text-sm rounded-lg focus:ring-brandYellow focus:border-brandYellow block w-full p-4 font-bold shadow-sm uppercase tracking-wider cursor-pointer" onchange="fetchWeather()">
+                            <option value="35.6762,139.6503">Токио, Япон</option>
+                            <option value="39.9042,116.4074">Бээжин, Хятад</option>
+                            <option value="31.2304,121.4737">Шанхай, Хятад</option>
+                            <option value="18.2528,109.5120">Саняа, Хайнань</option>
+                            <option value="35.1028,129.0403">Бусан, БНСУ</option>
+                            <option value="29.5628,106.5528">Чүнчин, Хятад</option>
+                            <option value="49.5833,117.3833">Манжуур, Хятад</option>
+                            <option value="47.8864,106.9057">Улаанбаатар, Монгол</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- 7 Day Forecast Grid -->
+                <div id="weather-result" class="flex overflow-x-auto weather-scroll gap-4 pb-4">
+                    <div class="text-sm text-brandGray w-full text-center py-6 font-bold"><i class="fas fa-spinner fa-spin mr-2"></i> Уншиж байна...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="bg-brandLight py-16 border-b border-gray-200 text-center">
+            <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-10">
+                <div>
+                    <h3 class="text-4xl md:text-5xl font-black text-brandBlue mb-3 font-serif">8,000+</h3>
+                    <p class="text-xs font-bold text-brandGray uppercase tracking-widest">Аз жаргалтай жуулчид</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl md:text-5xl font-black text-brandBlue mb-3 font-serif">25+</h3>
+                    <p class="text-xs font-bold text-brandGray uppercase tracking-widest">Аяллын чиглэл</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl md:text-5xl font-black text-brandBlue mb-3 font-serif">2015</h3>
+                    <p class="text-xs font-bold text-brandGray uppercase tracking-widest">Оноос хойш</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl md:text-5xl font-black text-brandBlue mb-3 font-serif">4.9</h3>
+                    <p class="text-xs font-bold text-brandGray uppercase tracking-widest">Дундаж үнэлгээ <i class="fas fa-star text-brandYellow ml-1"></i></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable Tours Section (ГАДААД АЯЛЛУУД) -->
+        <div class="py-24 container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-brandYellow font-bold uppercase tracking-[0.2em] text-sm">ГАДААД АЯЛЛУУД</span>
+                <h2 class="section-title text-brandBlue mt-3 mb-6">Аяллын Сонголтууд</h2>
+                <p class="text-brandGray max-w-3xl mx-auto text-lg leading-relaxed font-medium">Манай компани нь та болон танай хамт олон, гэр бүл, найз нөхдөд зориулан чанартай, найдвартай аяллын багцуудыг санал болгож байна.</p>
+            </div>
+
+            <div class="relative group">
+                <div id="h-scroll-tours" class="h-scroll-container">
+                    <!-- Injected by JS -->
+                </div>
+                <button onclick="scrollTours(-1)" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 w-14 h-14 bg-white border border-gray-100 rounded-full shadow-xl text-brandBlue hover:bg-brandYellow hover:text-white transition z-10 flex items-center justify-center hidden md:flex text-xl"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="scrollTours(1)" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 w-14 h-14 bg-white border border-gray-100 rounded-full shadow-xl text-brandBlue hover:bg-brandYellow hover:text-white transition z-10 flex items-center justify-center hidden md:flex text-xl"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="text-center mt-16">
+                <button onclick="changePage('tours-intl')" class="border-2 border-brandBlue text-brandBlue font-bold px-12 py-4 rounded-full hover:bg-brandBlue hover:text-white transition uppercase text-sm tracking-widest shadow-sm">
+                    Бүх аялал үзэх
+                </button>
+            </div>
+        </div>
+
+        <!-- ZURVAS - Why Choose Us -->
+        <div class="py-24 relative overflow-hidden bg-cover bg-center" style="background-image: url('https://images.pexels.com/photos/10332840/pexels-photo-10332840.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+            <div class="absolute inset-0 bg-brandBlue/85 backdrop-blur-[2px]"></div>
+            <div class="container mx-auto px-4 flex flex-col lg:flex-row gap-16 relative z-10">
+                <div class="lg:w-2/5">
+                    <span class="text-brandYellow font-bold uppercase tracking-[0.2em] text-sm">ЗУРВАС</span>
+                    <h2 class="section-title text-white mt-3 mb-8 leading-tight">Яагаад Magnet Way-ийг сонгох вэ?</h2>
+                    <p class="text-white mb-10 text-lg leading-relaxed font-medium">Magnet way нь Монголдоо тэргүүлэх аялал жуулчлалын компаниудын нэг бөгөөд 2015 оноос хойших арвин туршлага, найдвартай үйл ажиллагаагаараа салбартаа танигдсан компани юм.</p>
+                    <div class="bg-white/10 p-6 rounded-2xl border-l-4 border-brandYellow backdrop-blur inline-block shadow-lg">
+                        <h3 class="text-3xl font-black text-brandYellow font-serif">10+ ЖИЛИЙН</h3>
+                        <p class="text-white mt-2 font-bold uppercase tracking-wider text-xs">Туршлага (Баг бүрэлдэхүүн)</p>
+                    </div>
+                </div>
+                <div class="lg:w-3/5 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-12">
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-users"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Найдвартай, туршлагатай хамт олон</h4>
+                        <p class="text-white leading-relaxed text-sm">Аяллын мэргэшсэн шилдгийн шилдэг экспертүүд таны хүссэн улс руу мэргэжлийн өндөр төвшинд таны аяллыг урлах болно.</p>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-shield-alt"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Аюулгүй, баталгаатай үйлчилгээ</h4>
+                        <p class="text-white leading-relaxed text-sm">Таны тав тух, аюулгүй байдлыг нэн тэргүүнд тавина.</p>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-couch"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Тав тухтай, сэтгэл амар аялал</h4>
+                        <p class="text-white leading-relaxed text-sm">Бүх зохион байгуулалтыг бид хариуцна.</p>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-hand-holding-usd"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Төлбөрийн уян хатан нөхцөл</h4>
+                        <p class="text-white leading-relaxed text-sm">Төсөвт тохирсон олон төрлийн аяллын багц, хөнгөлөлт, урамшуулал, хуваан төлөх боломжуудыг санал болгоно.</p>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-handshake"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Итгэл даах хамтрагч</h4>
+                        <p class="text-white leading-relaxed text-sm">Амласан үйлчилгээгээ хариуцлагатайгаар хэрэгжүүлнэ.</p>
+                    </div>
+                    <div>
+                        <div class="w-14 h-14 bg-brandYellow text-brandBlue rounded-xl flex items-center justify-center text-2xl mb-5 shadow-md"><i class="fas fa-map-marked-alt"></i></div>
+                        <h4 class="text-xl font-bold mb-3 font-serif text-brandYellow">Онцгой маршрут, өргөн сонголт</h4>
+                        <p class="text-white leading-relaxed text-sm">Дэлхийн олон улс орон руу таны хүсэл, хэрэгцээнд нийцсэн аяллын өргөн сонголтыг санал болгоно.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Highlights Section -->
+        <div class="bg-white py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="text-brandGray font-bold uppercase tracking-widest text-xs">HIGHLIGHTS</span>
+                    <h2 class="section-title text-brandBlue mt-3 mb-6">2026 оны Онцлох аяллууд</h2>
+                    <p class="text-brandGray max-w-2xl mx-auto text-lg font-medium">Аялагчид зүгээр нэг аялал бус, онцгой мэдрэмж, шинэ туршлага, дурсамжийг илүүтэй сонгож байна.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8" id="highlight-grid"></div>
+            </div>
+        </div>
+
+        <!-- Testimonials Marquee -->
+        <div class="py-24 bg-brandLight overflow-hidden border-t border-gray-200">
+            <div class="container mx-auto px-4 text-center mb-12">
+                <span class="text-brandYellow font-bold uppercase tracking-[0.2em] text-xs">СЭТГЭГДЭЛ</span>
+                <h2 class="section-title text-brandBlue mt-3 mb-6">Сэтгэл ханамжийн үнэлгээ</h2>
+                <p class="text-brandGray max-w-2xl mx-auto text-lg font-medium">Манайхаар үйлчлүүлсэн жуулчдын бодит туршлага болон сэтгэл ханамжийн сэтгэгдэлтэй танилцана уу.</p>
+            </div>
+            
+            <div class="marquee-wrapper">
+                <div class="marquee-content gap-6 px-4" id="marquee-1"></div>
+            </div>
+            <div class="marquee-wrapper pt-0">
+                <div class="marquee-content gap-6 px-4" id="marquee-2" style="animation-direction: reverse; animation-duration: 50s;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SPA PAGES -->
+    <div id="page-tours-intl" class="spa-page py-20 bg-white min-h-screen">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-brandBlue mb-6 text-center">ГАДААД АЯЛЛУУД</h2>
+            <div class="w-24 h-1.5 bg-brandYellow mx-auto mb-16 rounded-full"></div>
+            <div id="grid-intl" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+        </div>
+    </div>
+
+    <div id="page-tours-dom" class="spa-page py-20 bg-brandLight min-h-screen">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-brandBlue mb-6 text-center">ДОТООД АЯЛЛУУД</h2>
+            <div class="w-24 h-1.5 bg-brandYellow mx-auto mb-16 rounded-full"></div>
+            <div id="grid-dom" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+        </div>
+    </div>
+
+    <div id="page-news" class="spa-page py-20 bg-white min-h-screen">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-brandBlue mb-6 text-center">МЭДЭЭ МЭДЭЭЛЭЛ</h2>
+            <div class="w-24 h-1.5 bg-brandYellow mx-auto mb-16 rounded-full"></div>
+            <div id="grid-news" class="grid grid-cols-1 md:grid-cols-3 gap-10"></div>
+        </div>
+    </div>
+
+    <div id="page-about" class="spa-page py-20 bg-brandLight min-h-screen">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <img src="black minimalist initial luxury monogram logo design.png" class="h-28 mx-auto mb-8 logo-enhanced object-contain">
+            <h2 class="section-title text-brandBlue mb-8">БИДНИЙ ТУХАЙ</h2>
+            <div class="bg-white p-10 md:p-14 rounded-3xl shadow-xl text-brandText leading-relaxed text-lg space-y-8 text-justify border border-gray-100 font-medium">
+                <p><strong>"Магнет Вэй Трэйвэл" ХХК</strong> нь 2015 оноос хойш аялал жуулчлалын салбарт гадаад болон дотоодын аяллын чиглэлээр тасралтгүй, амжилттай үйл ажиллагаа явуулж буй Монголдоо тэргүүлэгч компаниудын нэг юм.</p>
+                <p>Бид өнгөрсөн хугацаанд <strong>8,000 гаруй</strong> жуулчдыг хүлээн авч, Ази, Европын олон улс орон руу хөтөлбөртэй болон захиалгат VIP аяллуудыг өндөр түвшинд зохион байгуулж ирлээ.</p>
+                <p>Аялагч бүрийнхээ аюулгүй байдал, тав тухыг нэн тэргүүнд тавьж, амьдралынх нь хамгийн сайхан дурсамжийг бүтээхэд бидний эрхэм зорилго оршино.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- POLICY PAGE -->
+    <div id="page-terms" class="spa-page py-20 bg-white min-h-screen">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <button onclick="goBack()" class="mb-8 font-bold text-brandBlue hover:text-brandYellow transition uppercase text-sm flex items-center"><i class="fas fa-arrow-left mr-3"></i> Буцах</button>
+            <h2 class="section-title text-brandBlue mb-10">Гадаад, Дотоод аяллын журам</h2>
+            <div class="space-y-8 text-brandText leading-relaxed text-justify bg-brandLight p-10 rounded-3xl border border-gray-200">
+                <div><h3 class="font-black text-xl text-brandBlue mb-4 uppercase">Нэг. Нийтлэг үндэслэл</h3><p class="mb-3">1.1 Энэхүү журам нь БНХАУ, ОХУ, Дотоод аялалд оролцогч бүх аялагч дагаж мөрдөх зааварчилгаа юм.</p><p class="mb-3">1.2 Аяллын зохион байгуулалтын бүрэн эрх аяллын ахлагчид болон хөтчид харьяалагдана.</p><p class="mb-3">1.3 Аялагч нь Монгол Улсын болон аялаж буй улсын хууль, дүрмийг дагаж мөрдөх үүрэгтэй.</p></div>
+                <div class="border-t border-gray-300 my-4 pt-4"><h3 class="font-black text-xl text-brandBlue mb-4 uppercase">Хоёр. Аялалд гарахаас өмнөх бэлтгэл</h3><p class="mb-3"><strong>2.1 Паспорт:</strong> Хугацаа нь аяллын дуусах өдрөөс хойш наад зах нь 6 сараас доошгүй байна.</p><p class="mb-3"><strong>2.2 Бичиг баримт:</strong> Зөрчилгүй байх, Иргэний бүртгэлд хандаж шалгуулсан байх.</p><p class="mb-3"><strong>2.3 Эрүүл мэнд:</strong> Маршрутын онцлогт тохирсон биеийн бэлтгэлтэй байх. Ойр зуурын эмээ өөрөө бэлдэж авч явах.</p><p class="mb-3"><strong>2.4 Хилээр авч гарах эмийн зөвшөөрөл:</strong> Хувийн хэрэглээний эмийг хилээр гаргахдаа тухайн улсын гаалийн журмаар зөвшөөрөгдсөн эсэхийг урьдчилан судална.</p></div>
+                <div class="border-t border-gray-300 my-4 pt-4"><h3 class="font-black text-xl text-brandBlue mb-4 uppercase">Гурав. Бичиг баримт</h3><p class="mb-3">3.1 Гадаад паспорт, бичиг баримтны бүрэн бүтэн, үнэн зөв байдлыг аялагч өөрөө хариуцах үүрэгтэй.</p><p class="mb-3">3.2 18 нас хүрээгүй аялагч нь заавал эцэг эх, асран хамгаалагчтайгаа цуг явах бөгөөд төрсний гэрчилгээг авч явна.</p></div>
+                <div class="border-t border-gray-300 my-4 pt-4"><h3 class="font-black text-xl text-brandBlue mb-4 uppercase">Дөрөв. Хил гааль</h3><p class="mb-3">4.1 Хориотой эд зүйлсийг хилээр авч гарах, оруулахыг хориглоно.</p><p class="mb-3">4.2 Гаалийн хяналт өндөр тул үндэслэлгүй маргаан, дүрэм зөрчих үйлдэл гаргахгүй байх.</p></div>
+                <div class="border-t border-gray-300 my-4 pt-4"><h3 class="font-black text-xl text-brandBlue mb-4 uppercase">Тав. Нислэгтэй аяллын журам</h3><p class="mb-3">5.1 Нислэгээс 2-3 цагийн өмнө нисэх онгоцны буудалд ирсэн байх.</p><p class="mb-3">5.2 Ачаа тээшний хязгаарлалт (20-30кг + гар тээш 7-10кг) мөрдөнө.</p><p class="mb-3">5.3 Power bank нь 100Wh-аас ихгүй байх.</p><p class="mb-3">5.4 Цаг агаар, техникийн саатал зэрэг шалтгаанаар нислэг саатах тохиолдолд нислэгийн компанийн нөхцөлийг дагана.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL PAGE -->
+    <div id="page-detail" class="spa-page bg-brandLight pb-24 min-h-screen">
+        <div class="relative h-[50vh] md:h-[60vh] bg-brandBlue">
+            <img id="dt-img" src="" class="w-full h-full object-cover opacity-60" alt="Cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-brandBlue via-brandBlue/60 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 container mx-auto z-10">
+                <button onclick="goBack()" class="text-white font-bold text-xs mb-6 hover:text-brandYellow transition uppercase tracking-widest bg-white/10 backdrop-blur px-5 py-2.5 rounded-full flex items-center w-fit"><i class="fas fa-arrow-left mr-3"></i> Буцах</button>
+                <div class="flex flex-wrap gap-4 mb-5 items-center">
+                    <span id="dt-loc" class="bg-brandYellow text-brandBlue text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-sm"></span>
+                    <span id="dt-type" class="bg-white/20 text-white border border-white/40 text-xs font-bold px-4 py-2 rounded-full backdrop-blur uppercase tracking-wider shadow-sm"></span>
+                </div>
+                <h1 id="dt-title" class="section-title text-white leading-tight mb-8 drop-shadow-md text-4xl md:text-6xl lg:text-7xl"></h1>
+                <div class="flex gap-4 share-container relative">
+                    <button class="w-12 h-12 rounded-full bg-white/10 border border-white/30 text-white flex items-center justify-center hover:bg-white/30 backdrop-blur transition shadow-lg text-lg"><i class="far fa-heart"></i></button>
+                    <button onclick="toggleShareMenu(event)" class="w-12 h-12 rounded-full bg-white/10 border border-white/30 text-white flex items-center justify-center hover:bg-white/30 backdrop-blur transition shadow-lg text-lg"><i class="fas fa-share-nodes"></i></button>
+                    <div id="share-menu" class="hidden absolute top-14 left-0 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 transform origin-top-left transition-all">
+                        <div class="p-4 bg-gray-50 border-b border-gray-100"><p class="text-sm font-bold text-brandBlue uppercase tracking-wider">Хуваалцах</p></div>
+                        <button onclick="shareLink('fb')" class="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 hover:bg-gray-50 transition font-medium"><i class="fab fa-facebook text-[#1877F2] text-xl w-6"></i> Facebook</button>
+                        <button onclick="shareLink('messenger')" class="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 hover:bg-gray-50 transition font-medium"><i class="fab fa-facebook-messenger text-[#0084FF] text-xl w-6"></i> Messenger</button>
+                        <button onclick="shareLink('twitter')" class="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 hover:bg-gray-50 transition font-medium"><i class="fab fa-twitter text-[#1DA1F2] text-xl w-6"></i> Twitter</button>
+                        <button onclick="shareLink('copy')" class="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 hover:bg-gray-50 transition font-medium border-t border-gray-100"><i class="fas fa-link text-brandGray text-xl w-6"></i> Линк хуулах</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-16 flex flex-col lg:flex-row gap-12">
+            <div class="flex-1">
+                <div class="bg-white p-8 md:p-10 rounded-3xl border border-gray-100 shadow-lg mb-12">
+                    <h3 class="font-black text-2xl text-brandBlue mb-6 uppercase">Аяллын онцлогууд</h3>
+                    <ul class="list-none grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" id="dt-features"></ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-green-600 mb-4 flex items-center text-lg uppercase"><i class="fas fa-check-circle mr-3"></i> Үнэд багтсан</h4>
+                            <ul class="text-sm text-brandText space-y-3 font-medium leading-relaxed" id="dt-included"></ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-red-500 mb-4 flex items-center text-lg uppercase"><i class="fas fa-times-circle mr-3"></i> Үнэд багтаагүй</h4>
+                            <ul class="text-sm text-brandText space-y-3 font-medium leading-relaxed" id="dt-excluded"></ul>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="section-title text-brandBlue mb-10 border-l-8 border-brandYellow pl-6 text-3xl">Аяллын дэлгэрэнгүй хөтөлбөр</h3>
+                <div id="dt-program" class="space-y-8 relative before:absolute before:inset-0 before:ml-6 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-brandYellow/50 before:rounded-full"></div>
+            </div>
+            
+            <div class="lg:w-1/3 relative">
+                <div class="card-shadow bg-white p-10 rounded-3xl border border-gray-100 sticky top-28">
+                    <p class="text-xs font-bold text-brandGray uppercase tracking-widest text-center mb-2">Эхлэх үнэ</p>
+                    <h2 id="dt-price-display" class="text-4xl font-black text-brandBlue text-center mb-1 font-serif"></h2>
+                    <p class="text-center text-sm font-bold text-brandGray mb-8">/ хүн</p>
+                    
+                    <form onsubmit="submitForm(event)" class="space-y-6">
+                        <div>
+                            <label class="text-xs font-bold text-brandGray uppercase block mb-3">Явах огноог сонгоно уу</label>
+                            <div class="relative">
+                                <select id="dt-dates" required class="w-full bg-brandLight border border-gray-200 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandYellow transition text-brandText font-bold appearance-none cursor-pointer tracking-wider" onchange="updateSeats()">
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brandGray"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <p class="text-xs text-brandGray font-bold mt-3 text-right tracking-wider">Үлдсэн суудал: <span id="dt-seats" class="text-red-500 text-base"></span></p>
+                        </div>
+                        <div class="border border-gray-100 rounded-2xl p-6 bg-brandLight space-y-5">
+                            <div class="flex justify-between items-center">
+                                <div><p class="font-bold text-brandBlue text-base">Том хүн</p><p class="text-sm text-brandGray font-medium mt-1" id="price-lbl-adult"></p></div>
+                                <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1.5 shadow-sm">
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('adult', -1)">-</button>
+                                    <span id="pax-adult" class="font-bold w-8 text-center text-lg">1</span>
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('adult', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div><p class="font-bold text-brandBlue text-base">Хүүхэд</p><p class="text-[11px] text-brandGray font-bold uppercase leading-tight mt-0.5">2-11 нас (оргүй)</p><p class="text-sm text-brandGray font-medium mt-1" id="price-lbl-child"></p></div>
+                                <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1.5 shadow-sm">
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('child', -1)">-</button>
+                                    <span id="pax-child" class="font-bold w-8 text-center text-lg">0</span>
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('child', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div><p class="font-bold text-brandBlue text-base">Нярай</p><p class="text-[11px] text-brandGray font-bold uppercase mt-0.5">0-2 нас</p><p class="text-sm text-brandGray font-medium mt-1" id="price-lbl-infant">650,000₮</p></div>
+                                <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1.5 shadow-sm">
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('infant', -1)">-</button>
+                                    <span id="pax-infant" class="font-bold w-8 text-center text-lg">0</span>
+                                    <button type="button" class="w-10 h-10 rounded-lg bg-gray-50 text-brandGray hover:bg-gray-100 hover:text-brandBlue transition flex items-center justify-center text-lg font-bold" onclick="updatePax('infant', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-200 pt-6 space-y-4 font-bold">
+                            <div class="flex justify-between items-center"><span class="text-xs uppercase text-brandGray">Урьдчилгаа (50%)</span><span id="calc-deposit" class="text-xl text-brandText">0 ₮</span></div>
+                            <div class="flex justify-between items-center"><span class="text-xs uppercase text-brandGray">Нийт дүн:</span><span id="calc-total" class="text-3xl text-brandBlue font-black font-serif">0 ₮</span></div>
+                        </div>
+                        <div class="space-y-4 pt-4">
+                            <input type="text" required placeholder="Овог нэр" class="w-full bg-brandLight border border-gray-200 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandYellow transition text-sm font-bold">
+                            <input type="tel" required placeholder="Утасны дугаар" class="w-full bg-brandLight border border-gray-200 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandYellow transition text-sm font-bold">
+                        </div>
+                        
+                        <button type="submit" class="w-full btn-animated font-bold py-5 rounded-xl shadow-lg mt-6 uppercase tracking-widest text-sm text-brandBlue">Захиалга үүсгэх</button>
+                        
+                        <!-- AI Button -->
+                        <button type="button" onclick="generateTourTips()" class="w-full mt-4 text-white font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest text-sm transition hover:opacity-90" style="background: linear-gradient(90deg, #8B5CF6 0%, #D946EF 50%, #8B5CF6 100%); background-size: 200% auto;">
+                            <i class="fas fa-magic mr-2"></i> Энэ аялалд юу бэлдэх вэ? (AI)
+                        </button>
+                    </form>
+                    <div class="mt-8 p-6 bg-blue-50/50 rounded-2xl text-sm text-brandText border border-blue-100 text-center">
+                        <p class="text-xs font-bold text-brandGray uppercase mb-3 tracking-widest">Дансны мэдээлэл:</p>
+                        <p class="font-bold text-brandBlue mb-1 text-base uppercase font-serif">ГОЛОМТ БАНК</p>
+                        <p class="font-black text-2xl tracking-widest mb-2 text-brandBlue">91001500 3005193474</p>
+                        <p class="text-brandGray text-xs uppercase font-bold mt-2 tracking-wider">МАГНЕТ ВЭЙ ТРЭЙВЭЛ ХХК</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 py-20 border-t border-gray-200">
+            <h3 class="section-title text-center text-3xl mb-12 text-brandBlue">Таалагдаж магадгүй бусад аяллууд</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="dt-related"></div>
+            <div class="text-center mt-16"><button onclick="changePage('tours-intl')" class="border-2 border-brandBlue text-brandBlue font-bold px-12 py-4 rounded-full hover:bg-brandBlue hover:text-white transition uppercase text-sm tracking-widest shadow-sm">Бүх аяллуудыг үзэх</button></div>
+        </div>
+    </div>
+
+    <!-- NEWS DETAIL -->
+    <div id="page-news-detail" class="spa-page bg-white min-h-screen pb-20 pt-8">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <button onclick="goBack()" class="text-brandBlue font-bold text-sm uppercase mb-6 hover:text-brandYellow transition"><i class="fas fa-arrow-left mr-2"></i> Буцах</button>
+            <span id="nd-tag" class="bg-brandYellow text-brandBlue text-xs font-bold px-3 py-1.5 rounded-md mb-4 inline-block uppercase tracking-wider"></span>
+            <h1 id="nd-title" class="section-title text-3xl md:text-5xl text-brandBlue mb-4"></h1>
+            <p id="nd-source" class="text-brandGray text-sm font-bold uppercase tracking-wider border-b border-gray-100 pb-6 mb-8"></p>
+            <img id="nd-img" src="" class="w-full h-[300px] md:h-[500px] object-cover rounded-3xl mb-10 shadow-lg">
+            <div id="nd-content" class="text-brandText text-lg space-y-6 leading-relaxed font-medium"></div>
+        </div>
+    </div>
+
+    <footer class="relative text-white pt-20 pb-10 border-t-[8px] border-brandYellow mt-16 bg-cover bg-center" style="background-image: url('https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+        <div class="absolute inset-0 bg-brandBlue/90 backdrop-blur-sm"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12 mb-16 border-b border-white/20 pb-16">
+                <div class="lg:col-span-2">
+                    <div class="inline-block bg-white px-4 py-3 rounded-2xl mb-8 shadow-lg"><img src="black minimalist initial luxury monogram logo design.png" alt="Magnet Way" class="h-20 object-contain logo-enhanced"></div>
+                    <p class="text-white text-base leading-relaxed max-w-md drop-shadow-md font-medium">2015 оноос хойш үйл ажиллагаа явуулж буй, Монголдоо тэргүүлэгч аяллын компани — <strong class="text-brandYellow">Magnet Way Travel</strong>. Ази, Европ руу хөтөлбөртэй болон захиалгат аяллуудыг тогтмол зохион байгуулж байна.</p>
+                    <div class="flex gap-6 mt-8">
+                        <a href="https://www.facebook.com/profile.php?id=61578622845513" target="_blank" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center hover:bg-brandYellow hover:text-brandBlue transition backdrop-blur-sm shadow-md text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/magnet_way1/" target="_blank" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center hover:bg-brandYellow hover:text-brandBlue transition backdrop-blur-sm shadow-md text-xl"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div><h3 class="text-lg font-black mb-8 uppercase text-brandYellow tracking-widest font-serif">Холбоосууд</h3><div class="flex flex-col gap-4 text-sm text-white font-bold uppercase tracking-wider"><span class="cursor-pointer hover:text-brandYellow transition" onclick="changePage('about')">Бидний тухай</span><span class="cursor-pointer hover:text-brandYellow transition" onclick="changePage('tours-intl')">Аяллууд</span><span class="cursor-pointer hover:text-brandYellow transition" onclick="changePage('news')">Мэдээлэл</span></div></div>
+                <div><h3 class="text-lg font-black mb-8 uppercase text-brandYellow tracking-widest font-serif uppercase">ХОЛБОО БАРИХ</h3><ul class="space-y-5 text-sm text-white font-medium"><li class="flex items-center"><i class="fas fa-envelope mr-4 text-brandYellow text-lg"></i> magnetwaytravel@gmail.com</li><li class="flex items-center font-bold text-base"><i class="fas fa-phone mr-4 text-brandYellow text-lg"></i> 7610-6941, 8011-3677, 8861-3677</li><li class="flex items-start"><i class="fas fa-map-marker-alt mt-1 mr-4 text-brandYellow text-lg"></i> СБД 1-р хороо, Бизнес тауэр, 12 давхар 1204 тоот</li></ul></div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center text-xs text-white/80 font-medium tracking-wider font-bold">
+                <p>© 2026 Magnet Way Travel LLC — Бүх эрх хуулиар хамгаалагдсан.</p>
+                <div class="flex gap-6 mt-6 md:mt-0 uppercase"><span class="cursor-pointer hover:text-white transition" onclick="changePage('terms')">Аяллын журам</span><span class="cursor-pointer hover:text-white transition" onclick="changePage('privacy')">Нууцлалын бодлого</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot FAB -->
+    <button onclick="toggleAiChat()" class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-2xl flex items-center justify-center text-3xl hover:scale-110 transition z-50">
+        ✨
+    </button>
+
+    <!-- AI Chat Window -->
+    <div id="ai-chat-window" class="hidden fixed bottom-28 right-6 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 flex-col z-50 overflow-hidden font-sans">
+        <div class="bg-gradient-to-r from-purple-600 to-brandBlue text-white p-4 flex justify-between items-center">
+            <h3 class="font-bold text-sm uppercase tracking-widest"><i class="fas fa-robot mr-2"></i> AI Аяллын Зөвлөх</h3>
+            <button onclick="toggleAiChat()" class="hover:text-brandYellow transition"><i class="fas fa-times text-lg"></i></button>
+        </div>
+        <div id="ai-chat-messages" class="p-4 h-80 overflow-y-auto bg-gray-50 flex flex-col gap-3 text-sm">
+            <div class="bg-white p-3 rounded-xl rounded-tl-none border border-gray-100 self-start max-w-[85%] text-gray-700 shadow-sm leading-relaxed">
+                Сайн байна уу? Би Magnet Way-ийн AI аяллын зөвлөх байна. Та ямар төрлийн аялал хайж байна вэ? (Жишээ нь: Хүүхэдтэйгээ явах далайн эргийн дулаан орон)
+            </div>
+        </div>
+        <div class="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
+            <input type="text" id="ai-chat-input" placeholder="Асуултаа бичнэ үү..." class="flex-1 bg-gray-100 border-none px-4 py-2.5 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm" onkeypress="if(event.key==='Enter') sendAiMessage()">
+            <button onclick="sendAiMessage()" class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center hover:bg-purple-700 transition shadow-sm"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- AI Tour Tips Modal -->
+    <div id="ai-tips-modal" class="modal-overlay font-sans">
+        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-500 text-white p-6 flex justify-between items-center">
+                <h3 class="font-bold text-lg uppercase tracking-widest"><i class="fas fa-magic mr-2"></i> AI Аяллын Зөвлөгөө</h3>
+                <button onclick="closeTourTipsModal()" class="hover:text-brandYellow transition text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="ai-tips-content" class="p-6 overflow-y-auto text-gray-700 leading-relaxed text-sm md:text-base space-y-4"></div>
+            <div class="p-4 bg-gray-50 border-t border-gray-100 text-center text-xs text-gray-400 uppercase tracking-widest font-bold">
+                Powered by Gemini API
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toursData = [
+            { id: "h1", cat: "intl", feat: true, loc: "Бээжин-Шанхай", title: "БЭЭЖИН ШАНХАЙ ХОСОЛСОН АЯЛАЛ", dur: "8 хоног", priceStr: "2,790,000₮", aPrice: 2790000, cPrice: 2490000, iPrice: 650000, type: "4 Нислэгтэй", dates: ["05/12", "05/19", "05/26", "06/02"], img: "https://images.pexels.com/photos/16460876/pexels-photo-16460876.jpeg?auto=compress&cs=tinysrgb&w=1920", desc: "Орчин үеийн хөгжил ба түүхэн соёл төгс хосолсон мега хотуудын аялал. Диснейлэнд, Юниверсал парк багтсан 4 нислэгтэй аялал.", 
+              features: ["2 мега хот", "Диснейлэнд & Юниверсал", "Бүх чиглэлд нислэгтэй", "Гэр бүлийн аялал"],
+              included: ["УБ-Бээжин, Бээжин-Шанхай, Шанхай-Бээжин, Бээжин-УБ нислэг", "4 одтой зочид буудал (2 хүн 1 өрөө)", "Хөтөлбөрт заасан хоол", "Үзвэрийн тасалбар (Диснейлэнд, Юниверсал)", "Хөтөч", "Даатгал"],
+              excluded: ["Хувийн зардал", "Хөтөлбөртгүй хоол", "Ганцаарлах төлбөр"],
+              prog: [ { d: "Өдөр 1: УБ - Бээжин", t: "Нислэгээр Бээжинд бууж, хөтөчтэй уулзан зочид буудалдаа хүргүүлж амарна." }, { d: "Өдөр 2: Юниверсал Студио", t: "Дэлхийн хамгийн том Юниверсал паркад бүтэн өдөр тоглоно." }, { d: "Өдөр 3: Цагаан хэрэм", t: "Цагаан хэрэм үзээд Бээжин хоттой танилцана." }, { d: "Өдөр 4: Бээжин - Шанхай", t: "Дотоодын нислэгээр Шанхай руу явна. Орой нь Дорнын сувд цамхаг, Бунд эргээр зугаална." }, { d: "Өдөр 5: Шанхай Диснейлэнд", t: "Шанхай Диснейлэнд паркад бүтэн өдөр гайхамшигт ертөнцөөр аялна." }, { d: "Өдөр 6: Шанхай хот", t: "Нанжин гудамж, Ю цэцэрлэгт хүрээлэн үзнэ." }, { d: "Өдөр 7: Буцах", t: "Нислэгээр буцаж Бээжинд ирнэ." }, { d: "Өдөр 8: УБ ирэх", t: "Бээжингээс УБ руу нисч ирнэ." }] },
+            { id: "h2", cat: "intl", feat: true, loc: "БНСУ", title: "СОЛОНГОС ПУСАН АЯЛАЛ", dur: "5 хоног", priceStr: "1,100,000 KRW", aPrice: 1100000, cPrice: 1100000, iPrice: 0, type: "Нислэг", dates: ["06/10", "07/15"], img: "https://images.pexels.com/photos/10048123/pexels-photo-10048123.jpeg?auto=compress&cs=tinysrgb&w=1920", desc: "БНСУ-ын далайн эргийн үзэсгэлэнт хот Пусаны дурсамж дүүрэн аялал. Визийн мэдүүлэг 2 сарын өмнө өгнө.", 
+              features: ["Далайн хот", "Cable Car", "Shopping", "Байгалийн үзэсгэлэн"],
+              included: ["Бусан хүрэх тээвэр", "Буудал", "Хоол", "Cable car, Bamboo forest тасалбар", "Хөтөч"],
+              excluded: ["Визний хураамж", "Хувийн зардал", "УБ-Сөүл нислэг"],
+              prog: [ { d: "Өдөр 1: УБ - Сөүл - Пусан", t: "Сөүлээр дамжин Пусан хотод очиж амарна." }, { d: "Өдөр 2: Далайн гайхамшиг", t: "Cable Car, далайн галт тэрэг (Sky capsule), Busan Tower үзнэ." }, { d: "Өдөр 3: Bamboo Forest", t: "Хулсны ой, далайн эрэг дээрх сүм." }, { d: "Өдөр 4: Шоппинг", t: "Шоппинг хийж, завиар аялна." }, { d: "Өдөр 5: Буцах", t: "Буцах нислэг." }] },
+            { id: "h3", cat: "intl", feat: true, loc: "Вьетнам", title: "ВЬЕТНАМ ФУКУОК АЯЛАЛ", dur: "8 хоног", priceStr: "3,990,000₮", aPrice: 3990000, cPrice: 3990000, iPrice: 650000, type: "Шууд нислэг", dates: ["Сар бүрийн 10", "Сар бүрийн 24"], img: "https://images.pexels.com/photos/3601456/pexels-photo-3601456.jpeg?auto=compress&cs=tinysrgb&w=1920", desc: "Фукуок арлын халуун нар, далайн эрэг, усан паркийн төгс амралт.", 
+              features: ["Шууд нислэг", "Далайн амралт", "Винперл цогцолбор", "Халуун орон"],
+              included: ["УБ-Фукуок-УБ шууд нислэг", "5 одтой резорт", "Хоол", "VinWonders, Safari Park тасалбар", "Хөтөч"], excluded: ["Хувийн зардал", "Ганцаарлах төлбөр"],
+              prog: [ { d: "Өдөр 1: УБ - Фукуок", t: "Шууд нислэгээр хүрч буудалдаа амарна." }, { d: "Өдөр 2: VinWonders", t: "VinWonders усан парк болон Grand World." }, { d: "Өдөр 3: Safari Park", t: "Safari Park амьтны хүрээлэн." }, { d: "Өдөр 4-7: Амралт", t: "Арлуудаар аялж, далайн эрэгт чөлөөтэй амарна." }, { d: "Өдөр 8: Буцах", t: "УБ руу буцна." }] },
+            { id: "h4", cat: "intl", feat: true, loc: "Хятад/Чифэн", title: "УЛААНХАД ЭРҮҮЛ МЭНД VIP", dur: "5 өдөр", priceStr: "1,890,000₮", aPrice: 1890000, cPrice: 1890000, iPrice: 650000, type: "Нислэг", dates: ["Сар бүрийн 5", "Сар бүрийн 15"], img: "https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=1920", desc: "Чифэн хотын төв эмнэлэгт шинжилгээ өгч, эрүүл мэнддээ анхаарах VIP аялал.", 
+              features: ["Эмнэлгийн шинжилгээ", "VIP оношлогоо", "Шоппинг", "Хотын аялал"],
+              included: ["Тээврийн зардал", "Багц шинжилгээний үнэ", "Буудал", "Хоол", "Хөтөч"], excluded: ["Нэмэлт шинжилгээ", "Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: УБ - Эрээн - Чифэн", t: "УБ-аас Эрээн рүү нисч, цааш Чифэн хот руу унтлагын автобусаар хөдөлнө." }, { d: "Өдөр 2: Шинжилгээ", t: "Төв эмнэлэгт 21 төрлийн цус, эхо, хавдрын маркер өгнө. Далайн аквариум үзнэ." }, { d: "Өдөр 3: Шоппинг", t: "Ванда Плаза орж Эрээн рүү буцаж ниснэ." }, { d: "Өдөр 4: Эрээн хот", t: "Эрээн хотод худалдаа хийх чөлөөт өдөр." }, { d: "Өдөр 5: Буцах", t: "УБ руу ниснэ." }] },
+            { id: "h5", cat: "intl", feat: true, loc: "Хятад", title: "ХАЙНАНЬ САНЬЯА", dur: "8 өдөр", priceStr: "2,490,000₮", aPrice: 2490000, cPrice: 2190000, iPrice: 650000, type: "Шууд нислэг", dates: ["05/05", "05/12", "05/19", "05/26", "06/02", "06/09"], img: "https://images.pexels.com/photos/4321074/pexels-photo-4321074.jpeg?auto=compress&cs=tinysrgb&w=1920", desc: "Далайн амралт, Атлантис усан парк, Шилэн гүүр бүхий гайхалтай аялал.", 
+              features: ["Шууд нислэг", "Далайн амралт", "Атлантис парк", "Шилэн гүүр"],
+              included: ["УБ-Саньяа-УБ шууд нислэг", "5 одтой зочид буудал", "Өглөөний цай", "Атлантис усан парк, Сармагчингийн арал тасалбар", "Даатгал"],
+              excluded: ["Өдөр, оройн хоол", "Хувийн зардал", "Ганцаарлах төлбөр"],
+              prog: [ { d: "Өдөр 1: УБ - Саньяа", t: "Шууд нислэгээр Хайнань аралд бууна." }, { d: "Өдөр 2-3: Шөнийн Саньяа", t: "Зайсан толгойгоос хотыг харах, далайн эрэгт амрах." }, { d: "Өдөр 4-5: Далайн аялал", t: "Задгай далайд завиар аялах, нисдэг тэрэг." }, { d: "Өдөр 6: Атлантис", t: "Атлантис усан паркад бүтэн өдөр тоглоно." }, { d: "Өдөр 7-8: Сармагчингийн арал", t: "Сармагчингийн арал болон шилэн гүүр үзээд буцна." }] },
+
+            { id: "t5", cat: "intl", feat: false, loc: "Япон", title: "ЯПОН 4 ХОТЫН АЯЛАЛ", dur: "5 хоног", priceStr: "4,990,000₮", aPrice: 4990000, cPrice: 3990000, iPrice: 650000, type: "Шууд нислэг", dates: ["05/28", "06/10", "06/25"], img: "https://images.pexels.com/photos/2451038/pexels-photo-2451038.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Токио, Осака, Киото зэрэг 4 хотыг нэг зэрэг үзэх онцгой аялал.", 
+              features: ["Шууд нислэгтэй", "4 хотыг нэг зэрэг", "Шинкансэн туршлага", "Мэргэжлийн хөтөчтэй"],
+              included: ["УБ–Хирошима–УБ шууд нислэгийн тийз", "Аяллын даатгал", "3 одтой зочид буудал", "Хөтөлбөрт заагдсан хоол, унаа", "Хөтөлбөрт заагдсан үзвэр, үйлчилгээ", "Япон улсын цахим визний хураамж"],
+              excluded: ["Хувийн хэрэгцээний зардал"],
+              prog: [ { d: "Өдөр 1: УБ - Хирошима", t: "Хирошима хотод бууна. Хил гаалиар нэвтрээд оройн хоолоо идэн зочид буудалдаа амарна." }, { d: "Өдөр 2: Осака", t: "Шинкансэн хурдны галт тэргээр Осака руу хөдөлнө. Осака цайз үзнэ." }, { d: "Өдөр 3: Киото", t: "Киото хотын Алтан сүм, Фүшими Инари сүм үзнэ." }, { d: "Өдөр 4: Токио", t: "Асакуса сүм, Шибүяа уулзвар, Гинза дүүргээр аялна." }, { d: "Өдөр 5: Буцах", t: "Улаанбаатар руу ниснэ." }] },
+            { id: "t6", cat: "intl", feat: false, loc: "Хятад", title: "БЭЭЖИН НИСЛЭГТЭЙ", dur: "5 өдөр", priceStr: "2,590,000₮", aPrice: 2590000, cPrice: 2090000, iPrice: 650000, type: "Нислэг", dates: ["05/15", "05/22", "05/29", "06/05", "06/12", "06/19"], img: "https://images.pexels.com/photos/2412603/pexels-photo-2412603.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Богино хугацаанд Бээжин хотын түүх болон Юниверсал паркаар аялах.",
+              features: ["Богино хугацаа", "Нислэгтэй", "Юниверсал парк", "Түүхэн аялал"],
+              included: ["Нислэг", "Буудал", "Хоол", "Үзвэр", "Хөтөч"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: УБ - Бээжин", t: "Нислэгээр очиж амарна." }, { d: "Өдөр 2: Юниверсал парк", t: "Бүтэн өдөр тоглоно." }, { d: "Өдөр 3: Цагаан хэрэм", t: "Цагаан хэрэм, Шувууны үүр үзнэ." }, { d: "Өдөр 4: Хотын аялал", t: "Тяньаньмэнь талбай, Хориотой хот үзнэ." }, { d: "Өдөр 5: Буцах", t: "УБ руу ниснэ." } ] },
+            { id: "t7", cat: "intl", feat: false, loc: "Хятад", title: "БЭЭЖИН ГАЗРЫН АЯЛАЛ", dur: "8 өдөр", priceStr: "1,590,000₮", aPrice: 1590000, cPrice: 1590000, iPrice: 650000, type: "Галт тэрэг", dates: ["05/17", "05/24", "05/31", "06/07", "06/14"], img: "https://images.pexels.com/photos/1109015/pexels-photo-1109015.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Галт тэргээр Бээжин орж рашаанд амарч, паркаар зугаалах хэмнэлттэй аялал.",
+              features: ["Хямд төсөв", "Газрын аялал", "Халуун рашаан", "Юниверсал парк"],
+              included: ["Галт тэрэг, автобус", "Зочид буудал", "Хоол", "Үзвэр, тасалбар", "Хөтөч"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1-2: УБ - Замын-Үүд - Эрээн - Бээжин", t: "Галт тэргээр Замын-Үүд орж, хил гараад Эрээнээс унтлагын автобусаар Бээжин рүү шөнөжин явна." }, { d: "Өдөр 3: Цагаан хэрэм", t: "Бээжинд ирж, Цагаан хэрэм, Шувууны үүр үзнэ." }, { d: "Өдөр 4: Юниверсал Студио", t: "Бүтэн өдөр Юниверсал паркад тоглоно." }, { d: "Өдөр 5: Хотын аялал", t: "Тяньаньмэнь талбай, Хориотой хот үзэж, Ванфүжин гудамжаар зугаална." }, { d: "Өдөр 6: Шоппинг", t: "Шоппинг хийгээд орой нь автобусаар Эрээн рүү хөдөлнө." }, { d: "Өдөр 7-8: Буцах", t: "Эрээнээс хил гарч, галт тэргээр УБ-т ирнэ." } ] },
+            { id: "t8", cat: "intl", feat: false, loc: "Хятад", title: "МАНЖУУР / ХАЙЛААР", dur: "5 өдөр", priceStr: "890,000₮", aPrice: 890000, cPrice: 890000, iPrice: 450000, type: "Газар/Нислэг", dates: ["05/14", "05/21", "05/28", "06/04"], img: "https://images.pexels.com/photos/10332840/pexels-photo-10332840.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Хайлаар хотоор дамжин Манжуур хотын үзэсгэлэнт газруудаар аялах, шоппинг хийх.",
+              features: ["Хямд төсөв", "Шоппинг", "Хотын аялал", "Ойрхон"],
+              included: ["Унаа", "Зочид буудал", "Хөтөлбөрт заасан хоол", "Үзвэр", "Хөтөч"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: УБ - Хайлаар - Манжуур", t: "Нислэгээр Хайлаарт бууж, автобусаар Манжуур руу явна. Оройн хоол идээд амарна." }, { d: "Өдөр 2: Манжуур хотын аялал", t: "Матрөшка талбай, Музей, Арслан зааны цэцэрлэг, Хуримын ордон үзнэ. Орой нь шөнийн Манжуур үзнэ." }, { d: "Өдөр 3: Чөлөөт өдөр", t: "Зах, худалдааны төвүүдээр шоппинг хийх чөлөөт цаг." }, { d: "Өдөр 4: Манжуур - Замын-Үүд", t: "Автобусаар Замын-Үүд рүү хөдөлнө. Хил нэвтрээд галт тэргэнд сууна." }, { d: "Өдөр 5: УБ-т ирэх", t: "Өглөө Улаанбаатарт ирнэ." }] },
+            { id: "t9", cat: "intl", feat: false, loc: "Хятад", title: "ЧҮНЧИН (CHONGQING)", dur: "10 өдөр", priceStr: "2,590,000₮", aPrice: 2590000, cPrice: 2090000, iPrice: 650000, type: "Нислэг/Галт тэрэг", dates: ["Сар бүрийн 10"], img: "https://images.pexels.com/photos/450441/pexels-photo-450441.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Уулын хот Чүнчин, Дэлхийн байгалийн өв Вulong карст, алдарт дүүжин галт тэрэг.",
+              features: ["Байгалийн гайхамшиг", "Адал явдал", "Canyon & Karst", "Өвөрмөц хот"],
+              included: ["Тээврийн зардал", "Зочид буудал", "Хоол", "Үзвэрийн тасалбар", "Хөтөч"], excluded: ["Хувийн зардал"], 
+              prog: [ { d: "Өдөр 1-2: УБ - Чүнчин", t: "Галт тэргээр урагш хил давж, Чүнчин хот руу ниснэ." }, { d: "Өдөр 3: Лизиба галт тэрэг", t: "Байшин дундуур гардаг алдарт галт тэрэг болон шөнийн усан онгоцны аялал." }, { d: "Өдөр 4-6: Вулонг карст", t: "Аватар, Трансформерсийн зураг авалт хийгдсэн байгалийн гайхамшигт уулс үзнэ." }, { d: "Өдөр 7-10: Буцах", t: "Хотын аялал хийгээд УБ руу буцна." } ] },
+            { id: "t10", cat: "intl", feat: false, loc: "Хятад", title: "ШИШУАНБАННА", dur: "11 өдөр", priceStr: "2,990,000₮", aPrice: 2990000, cPrice: 2490000, iPrice: 650000, type: "Нислэг/Галт тэрэг", dates: ["Сар бүрийн 15"], img: "https://images.pexels.com/photos/2412603/pexels-photo-2412603.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Халуун орны уур амьсгал, үндэстний цөөнхийн соёл, зэрлэг зааны хөндий.",
+              features: ["Халуун орон", "Байгаль + Амралт", "Соёлын аялал", "Урт хугацаа"],
+              included: ["Тээврийн зардал", "Зочид буудал", "Хоол", "Үзвэр", "Хөтөч"], excluded: ["Хувийн зардал"], 
+              prog: [ { d: "Өдөр 1-11", t: "Халуун орны аялал, Зэрлэг зааны хөндий, Байгаль + амралт." } ] },
+            
+            // Domestic Update
+            { id: "d1", cat: "dom", feat: false, loc: "Хөвсгөл", title: "ХӨВСГӨЛ ДАЛАЙН АЯЛАЛ", dur: "4 өдөр", priceStr: "750,000₮", aPrice: 750000, cPrice: 500000, iPrice: 0, type: "Автобус", dates: ["06/15", "07/01", "07/15"], img: "https://images.pexels.com/photos/34508836/pexels-photo-34508836.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Монголын хөх сувд Хөвсгөл нуурын эрэгт амрах, завиар зугаалах, цаатан айлаар зочлох.",
+              features: ["Байгалийн үзэсгэлэн", "Нуурын амралт", "Завины аялал", "Цаатан айл"],
+              included: ["УБ-Мөрөн-УБ тав тухтай автобус", "Жуулчны баазын гэр", "Өдрийн 3 хоол", "Усан онгоцны тасалбар", "Хөтөч"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: Улаанбаатар - Мөрөн", t: "УБ хотоос хөдөлж, Мөрөн хот руу автобусаар аялна." }, { d: "Өдөр 2: Хатгал - Хөвсгөл", t: "Хатгал тосгонд ирж, жуулчны баазад байрлана. Усан онгоцоор нуурт аялна." }, { d: "Өдөр 3: Цаатан айл", t: "Морь унаж цаатан айлд зочлон, тэдний ахуй амьдралтай танилцана." }, { d: "Өдөр 4: Буцах", t: "Мөрөн хотоос УБ руу буцна." }] },
+            
+            { id: "d2", cat: "dom", feat: false, loc: "Өмнөговь", title: "ГОВИЙН ГАЙХАМШИГ", dur: "5 өдөр", priceStr: "890,000₮", aPrice: 890000, cPrice: 600000, iPrice: 0, type: "Автобус", dates: ["06/10", "07/20"], img: "https://images.pexels.com/photos/33412588/pexels-photo-33412588.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Ёлын ам, Хонгорын элс, Баянзаг зэрэг говийн гайхамшгуудыг үзэх.",
+              features: ["Говийн байгаль", "Элсэн манхан", "Түүхэн газар", "Тэмээ унах"],
+              included: ["Унаа", "Жуулчны бааз", "Өдрийн 3 хоол", "Хөтөч"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: Даланзадгад", t: "УБ-аас Даланзадгад орж байрлана." }, { d: "Өдөр 2: Ёлын ам", t: "Ёлын амын хавцал, мөсөн гол үзнэ." }, { d: "Өдөр 3: Хонгорын элс", t: "Тэмээ унаж элсэн манхан дээр наран жаргахыг харна." }, { d: "Өдөр 4: Баянзаг", t: "Үлэг гүрвэлийн өлгий Баянзагаар зочилно." }, { d: "Өдөр 5: Буцах", t: "УБ-т ирнэ." }] },
+              
+            { id: "d3", cat: "dom", feat: false, loc: "Өвөрхангай", title: "ОРХОНЫ ХӨНДИЙ", dur: "3 өдөр", priceStr: "550,000₮", aPrice: 550000, cPrice: 400000, iPrice: 0, type: "Автобус", dates: ["06/25", "07/10"], img: "https://images.pexels.com/photos/20582089/pexels-photo-20582089.jpeg?auto=compress&cs=tinysrgb&w=800", desc: "Дэлхийн өвд бүртгэгдсэн Орхоны хөндий, Хархорин, Эрдэнэзуу хийд.",
+              features: ["Түүхэн аялал", "Дэлхийн өв", "Хүрхрээ", "Морь унах"],
+              included: ["Унаа", "Жуулчны бааз", "Хоол", "Хөтөч", "Музейн тасалбар"], excluded: ["Хувийн зардал"],
+              prog: [ { d: "Өдөр 1: Элсэн тасархай - Хархорин", t: "Элсэн тасархайгаар дайрч Хархоринд ирнэ. Эрдэнэзуу хийд, музей үзнэ." }, { d: "Өдөр 2: Орхоны хүрхрээ", t: "Улаан цутгалан хүрхрээ үзэж, морь унана." }, { d: "Өдөр 3: Буцах", t: "Улаанбаатар руу хөдөлнө." }] }
+        ];
+
+        // --- NEWS DATA (BLOG) ---
+        const newsData = [
+            { id: "n1", date: "2026.05.15", tag: "Аялал", title: "Жанжиажэ хотын гайхамшигт цамхаг", desc: "Аватар киноны зураг авалт хийгдсэн Жанжиажэ байгалийн цогцолборт газрын тухай.", src: "Аяллын хөтөч", img: "https://images.pexels.com/photos/10332840/pexels-photo-10332840.jpeg?auto=compress&cs=tinysrgb&w=800",
+              content: "<p>Жанжиажэ үндэсний цэцэрлэгт хүрээлэн нь Хятадын Хунань мужид байрладаг бөгөөд 1992 онд ЮНЕСКО-гийн дэлхийн өвд бүртгэгдсэн. Хамгийн алдартай нь \"Аватар\" киноны Халлелуяа уулын зураг авалтыг хийсэн 3,000 гаруй босоо чулуун багананууд юм.</p><p class='mt-4'>Мөн дэлхийн хамгийн өндөр, хамгийн хурдан гадаах цахилгаан шат болох 'Bailong Elevator' (Зуун луугийн цахилгаан шат) энд байдаг. Та энэ цахилгаан шатаар дээш гарч үүлсийн дээрээс гайхалтай үзэмжийг тольдох боломжтой.</p>" },
+            { id: "n2", date: "2026.05.10", tag: "Мэдээ", title: "Осака хотын тухай", desc: "Японы хоолны нийслэл гэгддэг Осака хотоор аялахад заавал үзэх газрууд.", src: "Япон аялал", img: "https://images.pexels.com/photos/2451038/pexels-photo-2451038.jpeg?auto=compress&cs=tinysrgb&w=800",
+              content: "<p>Осака бол Японы гурав дахь том хот бөгөөд 'Kuidaore' буюу 'Тэнгэрт тултал идэх' гэсэн үгээрээ алдартай. Хамгийн хөдөлгөөнтэй, гэрэлтсэн гудамж бол Дотонбори юм.</p><p class='mt-4'>Үүнээс гадна Японы түүхийн чухал дурсгал болох Осака цайз (Osaka Castle) болон Азид томоохонд тооцогдох Universal Studios Japan (USJ) паркад хүүхэд багачуудтайгаа цагийг хөгжилтэй өнгөрөөх бүрэн боломжтой.</p>" },
+            { id: "n3", date: "2026.05.05", tag: "Үзвэр", title: "Тяньмэнь уулын үнэгэн дагины шоу", desc: "Хятадын Жанжиажэ хотод тоглогддог задгай театрын гайхамшигт шоу.", src: "Соёл урлаг", img: "https://images.pexels.com/photos/16460876/pexels-photo-16460876.jpeg?auto=compress&cs=tinysrgb&w=800",
+              content: "<p>'Tianmen Fox Fairy Show' нь Тяньмэнь уулын бэлд тоглогддог дэлхийн хамгийн том уул усаар тайз хийсэн задгай мюзикл юм.</p><p class='mt-4'>Энэхүү шоунд 500 гаруй жүжигчид оролцдог бөгөөд модчин залуу болон үнэгэн дагина хоёрын хайр дурлалын түүхийг гэрэл, дуу чимээний өндөр технологиор гайхалтайгаар амилуулан харуулдаг.</p>" },
+            { id: "n4", date: "2026.05.01", tag: "Зөвлөмж", title: "Аяллын журам, зөвлөмж", desc: "Гадаад руу аялахаар төлөвлөж буй хүмүүст хэрэгтэй виз, бичиг баримтын зөвлөмжүүд.", src: "Аяллын мэдээлэл", img: "https://images.pexels.com/photos/2108845/pexels-photo-2108845.jpeg?auto=compress&cs=tinysrgb&w=800",
+              content: "<p>Гадаад улс руу аялахад хамгийн түрүүнд гадаад паспортын хүчинтэй хугацааг шалгах хэрэгтэй. Ихэнх улс орнууд хилээр нэвтрэхэд паспортын хүчинтэй хугацаа 6 сараас дээш байхыг шаарддаг.</p><p class='mt-4'>Мөн аяллын даатгалаа заавал хийлгэх, орон нутгийн цаг агаарт тохируулан хувцсаа бэлдэх, хувийн хэрэглээний эм тангаа (өвчин намдаах, ходоодны эм г.м) авч явахыг зөвлөж байна.</p>" }
+        ];
+
+        // --- REVIEWS FOR MARQUEE ---
+        const reviews = [
+            { name: "Болормаа Б.", loc: "Тайланд аялал", text: "Тайланд аялал маш гайхалтай байсан. Бүх зүйл маш сайн зохион байгуулагдсан, хоол, зочид буудал бүгд дээд зэргийн байсан. Дахин аялна!" },
+            { name: "Энхбат Д.", loc: "Бали аялал", text: "Бали аялал бидний гэр бүлийн хамгийн сайхан дурсамж болсон. Баг маш мэргэжлийн түвшинд ажилласан. Баярлалаа!" },
+            { name: "Сарангэрэл М.", loc: "Япон аялал", text: "Япон сакура аялалаар аялсан. Хүлээлтээс давсан гайхалтай аялал байлаа. Гид маш сайн, бүх зүйлийг тайлбарлаж өгсөн." },
+            { name: "Батбаяр Г.", loc: "Турк аялал", text: "Каппадокиагийн агаарын шараар нисэх нь амьдралын хамгийн гайхалтай мөч байсан. Маш найдвартай." },
+            { name: "Н.Молом", loc: "Жанжиаже аялал", text: "Кинонд гардаг шиг сүртэй гоё газар байсан. Хөтөч болон нөхөрсөг хамт олны ачаар огт ганцаардсангүй." },
+            { name: "Оюунаа С.", loc: "Бээжин Шанхай", text: "Хүүхдүүд маань маш их баярласан. Диснейлэнд үнэхээр гайхалтай, зохион байгуулалт 100%!" },
+            { name: "Төгөлдөр У.", loc: "Бээжин Газрын", text: "Усан парк, халуун рашаан бүгд их таалагдсан. Magnet Way компанидаа ажлын амжилт хүсье." },
+            { name: "Цэцгээ Л.", loc: "Вьетнам Фукуок", text: "Далайн эрэг, усан парк нь гайхамшигтай. Шууд нислэгтэй болохоор хүүхэдтэй явахад маш амар байлаа." },
+            { name: "Мандах Г.", loc: "Манжуур аялал", text: "Богино хугацаанд маш их зүйл үзэж амжсан. Буудлын байршил сайтай, хөтөч нар туршлагатай байсан." },
+            { name: "Уянга Б.", loc: "Шишуанбанна", text: "Сэтгэл ариуссан сайхан аялал боллоо. Замдаа ядрахгүй, хоол унд сайтай байсан шүү." },
+            { name: "Хулан Б.", loc: "Чүнчин аялал", text: "Үнэхээр өвөрмөц хот. Лизиба галт тэрэг болон шөнийн усан онгоцны аялал үнэхээр таалагдлаа." },
+            { name: "Ганзориг Э.", loc: "Улаанхад VIP", text: "Эрүүл мэнддээ анхаарсан маш зөв сонголт байлаа. Эмнэлгийн үйлчилгээ маш шуурхай байсан." },
+            { name: "Сүхбат Ж.", loc: "Япон 4 хот", text: "Шинкансэн хурдны галт тэрэг үнэхээр тухтай. 4 хотыг богино хугацаанд үзсэн маш сайн хөтөлбөр." },
+            { name: "Жаргал С.", loc: "Хайнань Саньяа", text: "Атлантис усан паркад бүтэн өдөр тоглох үнэхээр гоё байлаа. Далайн эрэг нь цэвэрхэн тухтай." }
+        ];
+
+        let lastPage = 'home';
+        let currentHeroId = 'h1';
+        let curTourObj = null;
+        let paxAdult = 1;
+        let paxChild = 0;
+        let paxInfant = 0;
+
+        // Gemini API Configuration
+        const apiKey = "";
+        
+        async function fetchGeminiAPI(userQuery, systemInstruction) {
+            if (!apiKey) return "Уучлаарай, одоогоор хиймэл оюун ухааны систем холбогдоогүй байна.";
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            const maxRetries = 5;
+            const delays = [1000, 2000, 4000, 8000, 16000];
+
+            for (let i = 0; i <= maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
+                } catch (error) {
+                    if (i === maxRetries) {
+                        console.error("Gemini API Error:", error);
+                        return "Уучлаарай, сүлжээний алдаа гарлаа. Та дараа дахин оролдоно уу.";
+                    }
+                    await new Promise(r => setTimeout(r, delays[i]));
+                }
+            }
+        }
+
+        function formatAIResponse(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-brandBlue">$1</strong>')
+                .replace(/\* (.*?)\n/g, '<li class="ml-4 list-disc mb-1">$1</li>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        function init() {
+            const heroTours = toursData.filter(t => t.id.startsWith('h'));
+            let curSlide = 0;
+            window.setSlide = function(index) { curSlide = index; updateHero(); };
+            function updateHero() {
+                const tour = heroTours[curSlide];
+                currentHeroId = tour.id;
+                document.getElementById('hero-slider').style.backgroundImage = `url('${tour.img}')`;
+                document.getElementById('hero-title').innerText = tour.title;
+                document.getElementById('hero-loc').innerHTML = `<i class="fas fa-map-marker-alt mr-2 text-brandYellow"></i> ${tour.loc}`;
+                document.getElementById('hero-duration').innerHTML = `<i class="far fa-clock mr-2 text-brandYellow"></i> ${tour.dur}`;
+                document.getElementById('hero-desc').innerText = tour.desc;
+                document.getElementById('hero-price').innerText = tour.priceStr;
+                const indicators = document.getElementById('hero-text-indicators').children;
+                for(let i=0; i<indicators.length; i++) {
+                    if(i === curSlide) { indicators[i].classList.add('text-white', 'border-b-2', 'border-brandYellow', 'pb-1'); indicators[i].classList.remove('text-white/50'); }
+                    else { indicators[i].classList.remove('text-white', 'border-b-2', 'border-brandYellow', 'pb-1'); indicators[i].classList.add('text-white/50'); }
+                }
+            }
+            setInterval(() => { curSlide = (curSlide + 1) % heroTours.length; updateHero(); }, 6000);
+            updateHero();
+
+            const renderHCard = (t) => `
+                <div class="h-scroll-item bg-white rounded-3xl overflow-hidden card-shadow flex flex-col h-full border border-gray-100 cursor-pointer group" onclick="showDetail('${t.id}')">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${t.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                        <div class="absolute top-4 right-4 bg-brandBlue text-white text-sm font-bold px-4 py-2 rounded-full shadow-md">${t.priceStr}</div>
+                        <div class="absolute top-4 left-4 bg-brandYellow text-brandBlue text-xs uppercase font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wider">${t.type}</div>
+                    </div>
+                    <div class="p-7 flex flex-col flex-grow">
+                        <h3 class="card-title text-xl text-brandBlue mb-4 leading-snug flex-grow group-hover:text-brandYellow transition font-serif">${t.title}</h3>
+                        <div class="flex justify-between items-center text-sm text-brandGray mb-6 border-b border-gray-100 pb-5 font-medium">
+                            <span><i class="far fa-clock text-brandYellow mr-2"></i> ${t.dur}</span>
+                            <span><i class="fas fa-map-marker-alt text-brandYellow mr-2"></i> ${t.loc.split('/')[0]}</span>
+                        </div>
+                        <button class="w-full btn-animated font-bold py-4 rounded-xl mt-auto text-xs uppercase tracking-widest shadow-md btn-text">Хөтөлбөр үзэх <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
+                </div>
+            `;
+            
+            const renderCard = (t) => `
+                <div class="bg-white rounded-3xl overflow-hidden card-shadow flex flex-col h-full border border-gray-100 cursor-pointer group" onclick="showDetail('${t.id}')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${t.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                        <div class="absolute top-4 right-4 bg-brandBlue text-white text-sm font-bold px-4 py-2 rounded-full shadow-md">${t.priceStr}</div>
+                         <div class="absolute top-4 left-4 bg-white/80 backdrop-blur text-brandBlue text-xs uppercase font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wider">${t.loc.split('/')[0]}</div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between text-xs text-brandGray mb-3 font-bold uppercase tracking-wider">
+                            <span><i class="far fa-clock text-brandYellow mr-1"></i> ${t.dur}</span>
+                             <span><i class="fas fa-plane text-brandYellow mr-1"></i> ${t.type.split(' ')[0]}</span>
+                        </div>
+                        <h3 class="card-title text-lg text-brandBlue mb-5 flex-grow group-hover:text-brandYellow transition font-serif leading-snug">${t.title}</h3>
+                        <button class="w-full bg-brandLight border-2 border-brandLight text-brandBlue font-bold py-3 rounded-xl group-hover:bg-brandYellow group-hover:border-brandYellow group-hover:text-brandBlue transition text-xs uppercase tracking-widest shadow-sm btn-text">
+                            Хөтөлбөр үзэх
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const allTours = toursData.filter(t => t.cat === 'intl');
+            document.getElementById('h-scroll-tours').innerHTML = allTours.map(renderHCard).join('');
+            document.getElementById('highlight-grid').innerHTML = heroTours.map(renderCard).join('');
+            document.getElementById('grid-intl').innerHTML = allTours.map(renderCard).join('');
+            document.getElementById('grid-dom').innerHTML = toursData.filter(t => t.cat === 'dom').map(renderCard).join('');
+
+            const createReview = (r) => `
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 w-96 flex-shrink-0 text-left flex flex-col h-auto whitespace-normal break-words">
+                    <div class="flex text-brandYellow text-sm mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-brandText text-base mb-6 leading-relaxed italic">"${r.text}"</p>
+                    <div class="flex items-center gap-4 mt-auto pt-4 border-t border-gray-50">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 text-brandBlue font-black flex items-center justify-center text-lg shadow-sm">${r.name.charAt(0)}</div>
+                        <div>
+                            <h4 class="font-bold text-brandBlue text-base font-serif">${r.name}</h4>
+                            <p class="text-xs text-brandGray font-medium uppercase tracking-wider">${r.loc}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const m1 = reviews.slice(0, 7).map(createReview).join('');
+            const m2 = reviews.slice(7, 14).map(createReview).join('');
+            document.getElementById('marquee-1').innerHTML = m1 + m1;
+            document.getElementById('marquee-2').innerHTML = m2 + m2;
+
+            document.getElementById('grid-news').innerHTML = newsData.map(n => `
+                <div class="bg-white rounded-3xl overflow-hidden card-shadow cursor-pointer group border border-gray-100" onclick="showNews('${n.id}')">
+                    <div class="relative h-56 overflow-hidden"><img src="${n.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div>
+                    <div class="p-7 flex flex-col h-[240px]">
+                        <p class="text-xs text-brandGray font-bold mb-3 uppercase tracking-wider"><i class="far fa-calendar-alt text-brandYellow mr-1"></i> ${n.date}</p>
+                        <h3 class="card-title text-xl text-brandBlue mb-3 group-hover:text-brandYellow transition font-serif">${n.title}</h3>
+                        <p class="body-text text-sm text-gray-500 mb-4 flex-grow line-clamp-2">${n.desc}</p>
+                        <button class="text-brandBlue text-xs font-bold uppercase mt-auto text-left group-hover:text-brandYellow transition">Дэлгэрэнгүй <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            fetchWeather();
+        }
+
+        async function fetchWeather() {
+            const resultDiv = document.getElementById('weather-result');
+            resultDiv.innerHTML = `<div class="text-sm text-brandGray w-full text-center py-6 font-medium"><i class="fas fa-spinner fa-spin mr-2"></i> Цаг агаар уншиж байна...</div>`;
+            const val = document.getElementById('weather-city').value;
+            const [lat, lon] = val.split(',');
+            try {
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
+                const data = await response.json();
+                let html = '';
+                const today = new Date();
+                const daysOfWeek = ['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя'];
+                for(let i=0; i<7; i++) {
+                    let d = new Date(today); d.setDate(d.getDate() + i);
+                    let dayName = i === 0 ? 'Өнөөдөр' : daysOfWeek[d.getDay()];
+                    let maxT = Math.round(data.daily.temperature_2m_max[i]);
+                    let minT = Math.round(data.daily.temperature_2m_min[i]);
+                    let code = data.daily.weathercode[i];
+                    let icon = 'fa-sun text-yellow-500';
+                    if(code > 0 && code <= 3) icon = 'fa-cloud-sun text-gray-400';
+                    if(code > 3 && code <= 49) icon = 'fa-cloud text-gray-500';
+                    if(code >= 51 && code <= 67) icon = 'fa-cloud-rain text-blue-400';
+                    if(code >= 71 && code <= 77) icon = 'fa-snowflake text-blue-200';
+                    if(code >= 95) icon = 'fa-bolt text-yellow-600';
+                    html += `<div class="flex-shrink-0 bg-brandLight border border-gray-200 rounded-2xl p-5 min-w-[100px] text-center flex flex-col justify-center items-center shadow-sm"><p class="text-xs font-bold text-brandGray mb-2 uppercase tracking-wider">${dayName}</p><i class="fas ${icon} text-3xl mb-3"></i><p class="text-brandBlue font-black text-lg font-serif">${maxT}° <span class="text-brandGray text-sm font-medium">${minT}°</span></p></div>`;
+                }
+                resultDiv.innerHTML = html;
+            } catch (e) { resultDiv.innerHTML = `<span class="text-sm text-red-500 font-bold p-6">Мэдээлэл олдсонгүй. Дахин оролдоно уу.</span>`; }
+        }
+
+        function scrollTours(dir) { const container = document.getElementById('h-scroll-tours'); const scrollAmount = container.offsetWidth * 0.8 * dir; container.scrollBy({ left: scrollAmount, behavior: 'smooth' }); }
+        
+        function changePage(pageId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
+            if(document.getElementById('nav-'+pageId)) document.getElementById('nav-'+pageId).classList.add('nav-active');
+            document.querySelectorAll('.spa-page').forEach(el => el.classList.remove('page-visible'));
+            document.getElementById('page-'+pageId).classList.add('page-visible');
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo(0,0);
+            if(pageId !== 'detail' && pageId !== 'news-detail' && pageId !== 'terms' && pageId !== 'privacy') lastPage = pageId;
+        }
+
+        function showDetail(id) {
+            const t = toursData.find(x => x.id === id); if(!t) return;
+            curTourObj = t; paxAdult = 1; paxChild = 0; paxInfant = 0; updatePaxUI();
+            document.getElementById('dt-img').src = t.img;
+            document.getElementById('dt-title').innerText = t.title;
+            document.getElementById('dt-loc').innerHTML = `<i class="fas fa-map-marker-alt mr-2 text-brandYellow"></i> ${t.loc}`;
+            document.getElementById('dt-type').innerHTML = `<i class="fas fa-plane mr-2 text-brandYellow"></i> ${t.type}`;
+            document.getElementById('dt-price-display').innerText = t.priceStr;
+            document.getElementById('dt-features').innerHTML = (t.features || []).map(f => `<li class="flex items-center text-sm text-brandText font-medium"><i class="fas fa-star text-brandYellow mr-3 text-xs"></i>${f}</li>`).join('');
+            document.getElementById('dt-included').innerHTML = (t.included || []).map(i => `<li>- ${i}</li>`).join('');
+            document.getElementById('dt-excluded').innerHTML = (t.excluded || []).map(e => `<li>- ${e}</li>`).join('');
+            document.getElementById('price-lbl-adult').innerText = t.aPrice ? t.aPrice.toLocaleString() + '₮' : 'Асуух';
+            document.getElementById('price-lbl-child').innerText = t.cPrice ? t.cPrice.toLocaleString() + '₮' : 'Асуух';
+            document.getElementById('dt-dates').innerHTML = t.dates.map(date => `<option value="${date}">${date}</option>`).join('');
+            updateSeats();
+            document.getElementById('dt-program').innerHTML = (t.prog || []).map((p, i) => `<div class="relative pl-12 pb-6"><div class="absolute left-[-20px] top-0 w-10 h-10 rounded-full bg-brandBlue text-brandYellow font-black flex items-center justify-center border-4 border-white shadow-md z-10 text-lg font-serif">${i+1}</div><div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition"><h4 class="font-bold text-brandBlue mb-4 text-lg font-serif">${p.d}</h4><p class="body-text text-sm leading-relaxed">${p.t}</p></div></div>`).join('');
+            
+            let related = toursData.filter(x => x.id !== id);
+            related.sort((a, b) => {
+                let scoreA = (a.cat === t.cat ? 2 : 0) + ((a.features || []).some(f=>(t.features || []).includes(f)) ? 2 : 0) + (a.type.split(' ')[0] === t.type.split(' ')[0] ? 1 : 0);
+                let scoreB = (b.cat === t.cat ? 2 : 0) + ((b.features || []).some(f=>(t.features || []).includes(f)) ? 2 : 0) + (b.type.split(' ')[0] === t.type.split(' ')[0] ? 1 : 0);
+                return scoreB - scoreA + (Math.random() - 0.5); 
+            });
+            related = related.slice(0, 4);
+            document.getElementById('dt-related').innerHTML = related.map(r => `
+                <div class="bg-white rounded-3xl overflow-hidden card-shadow cursor-pointer border border-gray-100" onclick="showDetail('${r.id}')"><div class="relative h-48 overflow-hidden"><img src="${r.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div><div class="p-6"><h4 class="font-bold text-brandBlue text-base font-serif mb-2 leading-snug">${r.title}</h4><p class="text-brandYellow font-bold text-sm">${r.priceStr}</p></div></div>
+            `).join('');
+            changePage('detail'); updatePricing();
+        }
+
+        function updateSeats() { document.getElementById('dt-seats').innerText = Math.floor(Math.random() * 11) + 10; }
+        function updatePax(type, delta) { if(type === 'adult') paxAdult = Math.max(1, paxAdult + delta); if(type === 'child') paxChild = Math.max(0, paxChild + delta); if(type === 'infant') paxInfant = Math.max(0, paxInfant + delta); updatePaxUI(); updatePricing(); }
+        function updatePaxUI() { document.getElementById('pax-adult').innerText = paxAdult; document.getElementById('pax-child').innerText = paxChild; document.getElementById('pax-infant').innerText = paxInfant; }
+        function updatePricing() {
+            if(!curTourObj || curTourObj.aPrice === 0) { document.getElementById('calc-total').innerText = "Асуух"; document.getElementById('calc-deposit').innerText = "Асуух"; return; }
+            const total = (paxAdult * curTourObj.aPrice) + (paxChild * (curTourObj.cPrice || 0)) + (paxInfant * (curTourObj.iPrice || 0));
+            document.getElementById('calc-total').innerText = total.toLocaleString() + ' ₮';
+            document.getElementById('calc-deposit').innerText = (total / 2).toLocaleString() + ' ₮';
+        }
+
+        function goBack() { changePage(lastPage); }
+        function toggleShareMenu(event) { if(event) event.stopPropagation(); document.getElementById('share-menu').classList.toggle('hidden'); }
+        window.addEventListener('click', function(e) { const menu = document.getElementById('share-menu'); if (menu && !menu.classList.contains('hidden') && !e.target.closest('.share-container')) menu.classList.add('hidden'); });
+        function shareLink(platform) {
+            const url = window.location.href;
+            if(platform === 'fb') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+            else if(platform === 'twitter') window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`, '_blank');
+            else if(platform === 'copy') { navigator.clipboard.writeText(url).then(() => alert('Линк хуулагдлаа!')); }
+            else if(platform === 'messenger') window.open(`fb-messenger://share/?link=${encodeURIComponent(url)}`, '_blank');
+            document.getElementById('share-menu').classList.add('hidden');
+        }
+        function submitForm(e) { e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Илгээж байна...'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-check mr-2"></i> Захиалга үүслээ!'; btn.style.background = '#22c55e'; btn.style.color = '#fff'; e.target.reset(); setTimeout(() => { btn.innerText = 'Захиалга үүсгэх'; btn.style.background = ''; btn.style.color = ''; }, 3000); }, 1500); }
+        function showNews(id) {
+            const n = newsData.find(x => x.id === id); if(!n) return;
+            document.getElementById('nd-img').src = n.img; document.getElementById('nd-tag').innerText = n.tag; document.getElementById('nd-title').innerText = n.title; document.getElementById('nd-source').innerText = n.src; document.getElementById('nd-content').innerHTML = n.content; changePage('news-detail');
+        }
+
+        // --- AI FEATURES ---
+        function toggleAiChat() {
+            const chatWin = document.getElementById('ai-chat-window');
+            chatWin.classList.toggle('hidden');
+            chatWin.classList.toggle('flex');
+            if(!chatWin.classList.contains('hidden')) {
+                document.getElementById('ai-chat-input').focus();
+            }
+        }
+
+        async function sendAiMessage() {
+            const inputEl = document.getElementById('ai-chat-input');
+            const msg = inputEl.value.trim();
+            if(!msg) return;
+
+            const chatContainer = document.getElementById('ai-chat-messages');
+            
+            // Append User Message
+            chatContainer.innerHTML += `
+                <div class="bg-brandBlue p-3 rounded-xl rounded-tr-none border border-brandBlue/30 self-end max-w-[85%] text-white shadow-sm leading-relaxed ml-auto">
+                    ${msg}
+                </div>
+            `;
+            inputEl.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Append Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            chatContainer.innerHTML += `
+                <div id="${loadingId}" class="bg-white p-4 rounded-xl rounded-tl-none border border-gray-100 self-start max-w-[85%] shadow-sm">
+                    <div class="typing-indicator flex items-center gap-1"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            const toursContext = toursData.map(t => `- ${t.title} (${t.dur}): ${t.priceStr}. Онцлог: ${(t.features||[]).join(', ')}`).join('\n');
+            const systemPrompt = `You are an AI Travel Advisor for 'Magnet Way Travel', a Mongolian travel agency. Always respond in the Mongolian language. Be friendly, helpful, concise and use emojis ✨🌴✈️. Base your recommendations on the following available tours:\n\n${toursContext}\n\nIf the user asks something unrelated to travel, politely steer the conversation back to the travel agency's services. Keep responses under 4 sentences if possible.`;
+
+            const reply = await fetchGeminiAPI(msg, systemPrompt);
+
+            // Remove loading and append AI response
+            document.getElementById(loadingId).remove();
+            chatContainer.innerHTML += `
+                <div class="bg-white p-3 rounded-xl rounded-tl-none border border-gray-100 self-start max-w-[85%] text-gray-700 shadow-sm leading-relaxed">
+                    ${formatAIResponse(reply)}
+                </div>
+            `;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function generateTourTips() {
+            if(!curTourObj) return;
+
+            const modal = document.getElementById('ai-tips-modal');
+            const content = document.getElementById('ai-tips-content');
+            
+            modal.classList.add('active');
+            content.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10 text-forest">
+                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i> 
+                    <span class="font-bold tracking-widest uppercase text-xs">AI зөвлөгөөг бэлтгэж байна...</span>
+                </div>
+            `;
+
+            const userPrompt = `Generate travel tips for this tour: ${curTourObj.title} (${curTourObj.loc})`;
+            const sysPrompt = `You are an expert travel advisor for 'Magnet Way Travel'. Always respond in Mongolian. Generate a helpful, concise packing list and travel tips for the following tour:\n\nTitle: ${curTourObj.title}\nLocation: ${curTourObj.loc}\nDuration: ${curTourObj.dur}\n\nUse bullet points and emojis to make it easy to read. Structure it with '🎒 Юу бэлдэх вэ?' (What to pack) and '💡 Аяллын зөвлөгөө' (Travel tips). DO NOT invent prices or flights. Keep it highly relevant to the location's typical weather and activities.`;
+
+            const reply = await fetchGeminiAPI(userPrompt, sysPrompt);
+            content.innerHTML = formatAIResponse(reply);
+        }
+
+        function closeTourTipsModal() {
+            document.getElementById('ai-tips-modal').classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
